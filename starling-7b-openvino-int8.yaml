@@ -1,0 +1,22 @@
+name: starling-openvino
+backend: transformers
+parameters:
+  model: fakezeta/Starling-LM-7B-beta-openvino-int8
+context_size: 8192
+threads: 6
+f16: true
+type: OVModelForCausalLM
+stopwords:
+- <|end_of_turn|>
+- <|endoftext|>
+prompt_cache_path: "cache"
+prompt_cache_all: true
+template:
+  chat_message: |
+    {{if eq .RoleName "system"}}{{.Content}}<|end_of_turn|>{{end}}{{if eq .RoleName "assistant"}}<|end_of_turn|>GPT4 Correct Assistant: {{.Content}}<|end_of_turn|>{{end}}{{if eq .RoleName "user"}}GPT4 Correct User: {{.Content}}{{end}}
+
+  chat: |
+    {{.Input}}<|end_of_turn|>GPT4 Correct Assistant:
+
+  completion: |
+    {{.Input}}
